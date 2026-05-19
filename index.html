@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroNexus | Conectando Sonhos a Realidade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="modal-passageiro">
+        <div class="modal-content">
+            <h3 id="modal-titulo-assento" style="margin-top: 0; color: var(--nexus-graphite);">Assento A1</h3>
+            <p style="color: #666; font-size: 14px;">Selecione a categoria do passageiro para esta poltrona:</p>
+            <button class="btn-cat" onclick="definirPassageiro('Adulto')">Adulto (Acima de 12 anos)</button>
+            <button class="btn-cat" onclick="definirPassageiro('Criança')">Criança (2 a 11 anos)</button>
+            <button class="btn-cat" onclick="definirPassageiro('Bebê')">Bebê (Até 2 anos - Colo)</button>
+            <hr style="border:0; border-top: 1px solid #eee; margin: 15px 0;">
+            <button style="border:none; background:none; color:#e74c3c; font-weight:bold; cursor:pointer;" onclick="fecharModal()">Cancelar Seleção</button>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="logo">AERONEXUS</div>
+        <a href="admin.html" class="btn-adm">Painel do Consultor</a>
+    </header>
+
+    <main class="container">
+        <section class="search-engine">
+            <div class="flight-tabs">
+                <button id="tab-idavolta" class="tab-btn active" onclick="mudarTipoVoo('idavolta')">Ida e Volta</button>
+                <button id="tab-somenteida" class="tab-btn" onclick="mudarTipoVoo('somenteida')">Somente Ida</button>
+            </div>
+
+            <div id="search-grid-id" class="search-grid">
+                <div class="input-cell">
+                    <label>Aeroporto de Origem</label>
+                    <input type="text" id="origem" placeholder="Ex: GRU" maxlength="3" style="text-transform: uppercase;">
+                </div>
+                
+                <div class="input-cell">
+                    <label>Aeroporto de Destino</label>
+                    <input type="text" id="input-destino" placeholder="Ex: DXB" maxlength="3" style="text-transform: uppercase;">
+                </div>
+
+                <div class="input-cell dropdown-trigger" onclick="toggleDropdown('calendar-dropdown')">
+                    <label>Data de Ida</label>
+                    <div id="data-display" class="custom-display">Selecione a partida</div>
+                    
+                    <div id="calendar-dropdown" class="custom-dropdown hidden" onclick="event.stopPropagation()">
+                        <h4>Voos Disponíveis no Sistema:</h4>
+                        <div id="calendar-list" class="calendar-grid-list"></div>
+                    </div>
+                </div>
+
+                <div class="input-cell dropdown-trigger" id="box-data-volta" onclick="toggleDropdown('calendar-back-dropdown')">
+                    <label>Data de Volta</label>
+                    <div id="data-volta-display" class="custom-display">Selecione o retorno</div>
+                    
+                    <div id="calendar-back-dropdown" class="custom-dropdown hidden" onclick="event.stopPropagation()">
+                        <h4>Retorno Vinculado ao Voo:</h4>
+                        <div id="calendar-back-list" class="calendar-grid-list"></div>
+                    </div>
+                </div>
+
+                <div class="input-cell">
+                    <label>Assentos Selecionados</label>
+                    <div id="passenger-display" class="custom-display" style="background: #eef2f7; color: #555; font-size: 13px;">Nenhum selecionado</div>
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button class="btn-search" onclick="buscarPassagemReal()">Pesquisar Voos</button>
+            </div>
+        </section>
+
+        <section id="mapa-assentos-section" class="admin-container hidden" style="max-width: 700px; margin-top: 30px;">
+            <h3 style="color: var(--nexus-blue); margin-bottom: 5px;">Selecione os Assentos a Bordo</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Clique nas poltronas desejadas e defina o tipo de passageiro ocupante.</p>
+            
+            <div class="legenda-container">
+                <div class="legenda-item"><span class="box-legenda" style="background: purple;"></span> Primeira Classe</div>
+                <div class="legenda-item"><span class="box-legenda" style="background: darkblue;"></span> Classe Executiva</div>
+                <div class="legenda-item"><span class="box-legenda" style="background: #7f8c8d;"></span> Classe Econômica</div>
+                <div class="legenda-item"><span class="box-legenda" style="background: #2ecc71;"></span> Selecionado Agora</div>
+                <div class="legenda-item"><span class="box-legenda" style="background: #2c3e50;"></span> Ocupado / Indisponível</div>
+            </div>
+
+            <div class="aviao-corpo">
+                <div class="aviao-bico">Boeing 777-300ER</div>
+                
+                <div class="cabine-secao">
+                    <small class="cabine-label">PRIMEIRA CLASSE (SUÍTES)</small>
+                    <div id="grid-primeira" class="assentos-layout-grid primeira-grid"></div>
+                </div>
+
+                <div class="cabine-secao">
+                    <small class="cabine-label">CLASSE EXECUTIVA</small>
+                    <div id="grid-executiva" class="assentos-layout-grid executiva-grid"></div>
+                </div>
+
+                <div class="cabine-secao">
+                    <small class="cabine-label">CLASSE ECONÔMICA</small>
+                    <div id="grid-economica" class="assentos-layout-grid economica-grid"></div>
+                </div>
+
+                <button id="btn-confirmar-assentos" class="btn-search" style="background: #27ae60; padding: 15px; font-size: 16px; margin-top: 20px; width: 100%; border-radius: 4px;" onclick="finalizarSelecaoAssentos()">
+                    Confirmar Seleção de Assentos
+                </button>
+            </div>
+        </section>
+
+        <aside id="ia-box" class="hidden">
+            <div class="ia-header">INSIGHTS DO DESTINO & VOO (AERONEXUS AI)</div>
+            <div class="ia-body">
+                <p id="ia-texto"></p>
+            </div>
+        </aside>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
